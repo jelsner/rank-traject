@@ -90,31 +90,51 @@ Wide = data.frame(Round, Conrad, Mike, RickL, Sam, Jim, Harvy, Cade, Hank, Scott
                   Rob, John, Mark, Craig, Didi, Juliana, Beth, Lori)
 
 
-# 2019
+# 2019 Saturday
 nP <- 12
 Round <- 0:4
 
 Conrad <-  c(1, 1, 1, 1, 1)
-Mike <-    c(2, 2, 2, 2, 2)
-Harv <-    c(3, 3, 3, 3, 3)
-JimE <-    c(4, 4, 4, 4, 4)
-Hank <-    c(5, 5, 5, 5, 5)
-John <-    c(6, 6, 6, 6, 6)
-Jordan <-  c(7, 7, 7, 7, 7)
-JaSun <-   c(8, 8, 8, 8, 8)
-Charles <- c(9, 9, 9, 9, 9)
-Didi <-    c(10, 10, 10, 10, 10)
-Beth <-    c(11, 11, 11, 11, 11)
-JimG <-    c(12, 12, 12, 12, 12)
+Mike <-    c(2, 2, 2, 2, 5)
+Harv <-    c(3, 4, 4, 5, 3)
+JimE <-    c(4, 3, 3, 3, 4)
+Hank <-    c(5, 8, 6, 4, 2)
+John <-    c(6, 6, 8, 7, 10)
+Jordan <-  c(7, 7, 7, 8, 8)
+JaSun <-   c(8, 5, 9, 9, 6)
+Charles <- c(9, 9, 5, 6, 7)
+Didi <-    c(10, 10, 10, 10, 9)
+Beth <-    c(11, 11, 11, 11, NA)
+JimG <-    c(12, 12, 12, 12, NA)
 
 Wide <- data.frame(Round, Conrad, Mike, Harv, JimE, Hank, John, Jordan, JaSun, Charles, Didi, Beth, JimG)
+
+# 2019 Sunday
+
+nP <- 10
+Round <- 0:2
+
+Conrad <-  c(1, 1, 1)
+Hank <- c(2, 2, 4)
+Harv <- c(3, 7, 7)
+Jim <- c(4, 8, 10)
+Mike <- c(5, 10, 5)
+JaSun <- c(6, 3, 9)
+Charles <- c(7, 6, 3)
+Jordan <- c(8, 5, 8)
+John <- c(9, 9, 6)
+Craig <- c(10, 4, 2)
+
+Wide <- data.frame(Round, Conrad, Hank, Harv, Jim, Mike, JaSun, Charles, Jordan, John, Craig)
 
 ```
 
 ```{r, eval = FALSE}
-colnames(Wide) = c("Round", "Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
+colnames(Wide) <- c("Round", "Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
                    "Hank Bass", "John Elsner", "Jordan Huston", "JaSun Burdick", "Charles Robshaw",
                    "Diana Huston", "Beth Verish", "Jim Gaarder")
+colnames(Wide) <- c("Round", "Conrad Damon", "Hank Bass", "Harv Brandt", "Jim Elsner", "Mike Prost", "JaSun Burdick",
+                    "Charles Robshaw", "Jordan Huston", "John Elsner", "Craig Anderson")
 ```
 
 Wide to long
@@ -129,13 +149,13 @@ getPalette <- colorRampPalette(brewer.pal(9, "Set1"))
 
 ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   geom_line(size = 2) +
-  geom_point(size = 2) +
+  geom_point(size = 3) +
   xlab("") +
   scale_x_continuous(breaks = 0:4, labels = c("Seed", "Round 1", "Round 2", "Round 3", "Final")) +
   scale_y_reverse(breaks = 1:nP) +
   ylab("Rank") +
   theme_fivethirtyeight() +
-  ggtitle("13th Annual Tally Rally\n Player Rank Trajectory") +
+  ggtitle("13th Annual Tally Rally (Saturday)\n Player Rank Trajectory") +
   scale_color_manual(values = getPalette(nP))
 
 library(dplyr)
@@ -145,13 +165,26 @@ df <- Long %>%
 
 ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   geom_line(size = 2) +
-  geom_point(size = 2) +
+  geom_point(size = 3) +
   xlab("") + ylab("") +
-  scale_x_continuous(breaks = 0:4, labels = c("Initial\nSeed", "After\nRound 1", "After\nRound 2", "After\nRound 3", "Final\nRank")) +
-  scale_y_reverse(breaks = 1:nP, labels = df$Player) +
+  scale_x_continuous(breaks = 0:4, 
+                     labels = c("Initial\nSeed", "After\nRound 1", "After\nRound 2", "After\nRound 3", "Final\nRank")) +
+  scale_y_reverse(breaks = 1:nP, labels = df$Player, sec.axis = sec_axis(~., breaks = 1:nP)) +
   theme_economist() +
-  ggtitle("13th Annual Tally Rally\nPlayer Trajectory") +
+  ggtitle("13th Annual Tally Rally (Saturday)\nPlayer Trajectory") +
   scale_color_manual(values = getPalette(nP), guide = FALSE)
+
+ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
+  geom_line(size = 2) +
+  geom_point(size = 3) +
+  xlab("") + ylab("") +
+  scale_x_continuous(breaks = 0:2, 
+                     labels = c("Initial\nSeed", "After\nRound 1", "Final\nRank")) +
+  scale_y_reverse(breaks = 1:nP, labels = df$Player, sec.axis = sec_axis(~., breaks = 1:nP)) +
+  theme_economist() +
+  ggtitle("13th Annual Tally Rally (Sunday)\nPlayer Trajectory") +
+  scale_color_manual(values = getPalette(nP), guide = FALSE)
+
 
 ```
 
