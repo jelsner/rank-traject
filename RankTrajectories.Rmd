@@ -1,0 +1,180 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+Spring Escape
+=============
+
+Last month I organized the 10th annual Tally Rally frisbee tournament featuring top players from around the country including as far away as Wisconsin, Alaska, California, and Virginia. The game is officially called Double Disc Court, but informally we call it `Escape.' The game is played like doubles tennis except that there are two discs and you and your teammate need to avoid getting caught with both discs at the same time. See https://youtu.be/nszaRylOxus for more details.
+
+But the point here is to demonstrate how to create line graphs in R without legends. Starting with an initial seeding of players the tournament proceeds in rounds with players moving up or down in ranking according to how well they perform. A graph of the rank by round provides a rank trajectory through the tournament by player. Perhaps you can use graphs like these?
+
+```{r}
+# 2016
+nP = 19
+Round = 0:5
+Conrad = c(1, 1, 1, 1, 2, 2)
+Scott = c(2, 7, 6, 4, 1, 1)
+Jim = c(3, 3, 3, 6, 5, 6)
+Dave = c(4, 12, 7, 7, 10, 12)
+Mike = c(5, 4, 10, 10, 7, 5)
+Jack = c(6, 6, 12, 12, 14, 19)
+Hank = c(7, 10, 4, 3, 6, 6)
+Cade = c(8, 8, 2, 2, 3, 4)
+Randy = c(9, 9, 9, 5, 4, 3)
+Arthur = c(10, 2, 11, 11, 9, 9)
+John = c(11, 11, 8, 8, 8, 8)
+Peter = c(12, 19, 18, 14, 15, 16)
+Beth = c(13, 5, 5, 9, 11, 11)
+Richard = c(14, 18, 19, 19, 17, 14)
+JaSun = c(15, 17, 16, 15, 13, 13)
+Tom = c(16, 16, 17, 18, 16, 17)
+Stephanie = c(17, 15, 15, 16, 18, 18)
+Charles = c(18, 14, 14, 17, 19, 15)
+Jordan = c(19, 13, 13, 13, 12, 10)
+
+# 2017
+nP = 17
+Round = 0:5
+Mike = c(6, 4, 7, 6, 3, 1)
+Conrad = c(1, 1, 1, 1, 2, 2)
+Arthur = c(10, 6, 8, 4, 4, 2)
+Jim = c(2, 2, 2, 2, 2, 4)
+Randy = c(5, 10, 3, 3, 5, 5)
+Hank = c(9, 5, 4, 7, 7, 6)
+Sam = c(3, 9, 5, 5, 6, 7)
+Peter = c(12, 14, 14, 9, 8, 8)
+Jack = c(7, 11, 9, 11, 11, 9)
+John = c(11, 13, 13, 10, 9, 10)
+Cade = c(8, 12, 6, 8, 10, 11)
+Richard = c(14, 8, 12, 13, 12, 12)
+Tom = c(15, 15, 17, 14, 13, 13)
+Charles = c(13, 7, 11, 15, 15, 14)
+Diana = c(16, 17, 17, 17, 16, 15)
+Dave = c(4, 3, 10, 12, NA, 16)
+Larry = c(17, 16, 16, 16, NA, 17)
+
+# 2018
+nP = 26
+Round = 0:8
+Conrad =  c(1, 1, 1, 1, 1, 2, 1, 1, 1)
+Mike =    c(5, 2, 2, 2, 2, 1, 8, 5, 2)
+RickL =   c(2, 5, 7, 6, 4, 3, 3, 3, 3)
+Sam =     c(6, 6, 6, 13, 11, 6, 4, 4, 4)
+Jim =     c(3, 16, 25, 20, 9, 8, 2, 2, 5)
+Harvy =  c(4, 3, 5, 5, 3, 4, 6, 6, 6)
+Cade =    c(7, 7, 3, 10, 8, 5, 5, 7, 7)
+Hank =    c(9, 9, 9, 9, 7, 7, 7, 8, 8)
+Scott =   c(8, 8, 4, 4, 10, 10, 9, 9, 9)
+JaSun =   c(14, 14, 21, 19, 12, 12, 10, 10, 10)
+Richard = c(15, 4, 8, 8, 6, 11, 11, 11, 11)
+Thomas =  c(11, 11, 11, 3, 5, 9, 12, 12, 12)
+Peter =   c(12, 12, 15, 14, 16, 13, 13, 13, 13)
+Jordan =  c(13, 13, 23, 17, 15, 14, 14, 14, 14)
+Jens =    c(19, 19, 16, 15, 19, 16, 15, 15, 15)
+Jeff =    c(18, 25, 19, 18, 20, 17, 16, 16, 16)
+Geoff =   c(26, 26, 26, 24, 21, 18, 17, 17, 17)
+RickW =   c(25, 18, 17, 16, 18, 15, 18, 18, 18)
+Rob =     c(17, 17, 10, 11, 17, 17, NA, NA, 19)
+John =    c(10, 21, 13, 12, 14, NA, NA, NA, 20)
+Mark =    c(16, 15, 12, 12, NA, NA, NA, NA, 21)
+Craig =   c(21, 10, 24, 24, NA, NA, NA, NA, 22)
+Didi =    c(20, 23, 14, 7, 9, NA, NA, NA, NA)
+Juliana = c(22, 22, 20, 23, 22, NA, NA, NA, NA)
+Beth =    c(23, 20, 22, 21, 21, NA, NA, NA, NA)
+Lori =    c(24, 24, 18, 22, 24, NA, NA, NA, NA)
+
+Wide = data.frame(Round, Conrad, Mike, RickL, Sam, Jim, Harvy, Cade, Hank, Scott,
+                  JaSun, Richard, Thomas, Peter, Jordan, Jens, Jeff, Geoff, RickW, 
+                  Rob, John, Mark, Craig, Didi, Juliana, Beth, Lori)
+
+
+# 2019
+nP <- 12
+Round <- 0:4
+
+Conrad <-  c(1, 1, 1, 1, 1)
+Mike <-    c(2, 2, 2, 2, 2)
+Harv <-    c(3, 3, 3, 3, 3)
+JimE <-    c(4, 4, 4, 4, 4)
+Hank <-    c(5, 5, 5, 5, 5)
+John <-    c(6, 6, 6, 6, 6)
+Jordan <-  c(7, 7, 7, 7, 7)
+JaSun <-   c(8, 8, 8, 8, 8)
+Charles <- c(9, 9, 9, 9, 9)
+Didi <-    c(10, 10, 10, 10, 10)
+Beth <-    c(11, 11, 11, 11, 11)
+JimG <-    c(12, 12, 12, 12, 12)
+
+Wide <- data.frame(Round, Conrad, Mike, Harv, JimE, Hank, John, Jordan, JaSun, Charles, Didi, Beth, JimG)
+
+```
+
+```{r, eval = FALSE}
+colnames(Wide) = c("Round", "Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
+                   "Hank Bass", "John Elsner", "Jordan Huston", "JaSun Burdick", "Charles Robshaw",
+                   "Diana Huston", "Beth Verish", "Jim Gaarder")
+```
+
+Wide to long
+```{r, fig.width=12}
+library("tidyr")
+library("ggplot2")
+library("ggthemes")
+Long <- gather(Wide, Player, Rank, 2:(nP + 1))
+
+library("RColorBrewer")
+getPalette <- colorRampPalette(brewer.pal(9, "Set1"))
+
+ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
+  geom_line(size = 2) +
+  geom_point(size = 2) +
+  xlab("") +
+  scale_x_continuous(breaks = 0:4, labels = c("Seed", "Round 1", "Round 2", "Round 3", "Final")) +
+  scale_y_reverse(breaks = 1:nP) +
+  ylab("Rank") +
+  theme_fivethirtyeight() +
+  ggtitle("13th Annual Tally Rally\n Player Rank Trajectory") +
+  scale_color_manual(values = getPalette(nP))
+
+library(dplyr)
+df <- Long %>% 
+  filter(Round == 0) %>%
+  arrange(Rank)
+
+ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
+  geom_line(size = 2) +
+  geom_point(size = 2) +
+  xlab("") + ylab("") +
+  scale_x_continuous(breaks = 0:4, labels = c("Initial\nSeed", "After\nRound 1", "After\nRound 2", "After\nRound 3", "Final\nRank")) +
+  scale_y_reverse(breaks = 1:nP, labels = df$Player) +
+  theme_economist() +
+  ggtitle("13th Annual Tally Rally\nPlayer Trajectory") +
+  scale_color_manual(values = getPalette(nP), guide = FALSE)
+
+```
+
+
+http://www.karambelkar.info/2016/03/alternative-to-using-legends-in-ggplot2/
+```{r}
+library("ggrepel")
+ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
+  geom_line(size = 2) +
+  geom_point(size = 2) +
+  xlab("") + ylab("") +
+  scale_x_continuous(breaks = 0:5, labels = c("Seed", "Round 1", "Round 2", "Round 3", "Semis", "Final")) +
+  scale_y_reverse(breaks = 1:17, labels = 1:17) +
+  theme_economist() +
+  ggtitle("11th Annual Tally Rally\n Player Rank Trajectory") +
+ # scale_color_manual(values = getPalette(nP), guide = FALSE) +
+  geom_label_repel(data = Long[Long$Round == 5, ],
+                     aes(label = Player, fill = Player),
+                     nudge_x = 0.5, size=3, color='white',
+                     force=1.5, segment.color='#bbbbbb', show.legend = FALSE) +
+    theme(strip.text = element_blank(), # Hide facet text
+          legend.position = 'none', # Hide legend
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_blank())  +
+    expand_limits(x = 5.5) 
+```
