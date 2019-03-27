@@ -152,7 +152,17 @@ ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   theme_economist() +
   ggtitle("13th Annual Tally Rally\nPlayer Trajectory") +
   scale_color_manual(values = getPalette(nP), guide = FALSE)
+```
 
+Slope graph
+```{r}
+initial <- 1:12
+final <- 1:12
+
+player <- c("Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
+                   "Hank Bass", "John Elsner", "Jordan Huston", "JaSun Burdick", "Charles Robshaw",
+                   "Diana Huston", "Beth Verish", "Jim Gaarder")
+df <- data.frame(initial, final, player)
 ```
 
 
