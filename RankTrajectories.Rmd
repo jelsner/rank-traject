@@ -188,6 +188,7 @@ ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
 
 Slope graph
 ```{r}
+#SATURDAY
 initial <- 1:12
 final <- c(1, 5, 3, 4, 2, 10, 8, 6, 7, 9, 11, 12)
 
@@ -213,6 +214,37 @@ ggplot(df) +
   geom_text(label = lf, y = df$final, x = rep.int(1, 12), hjust = 'left', size = 3.5) +
   xlim((0 - .5), (1 + .5)) +
   ggtitle("13th Rally in Tally (Saturday)") +
+  theme_void() 
+
+#SUNDAY
+
+initial <- 1:10
+final <- c(1, 4, 7, 10, 5, 9, 3, 8, 6, 2)
+
+initial <- 11 - initial
+final <- 11 - final
+
+player <- c("Conrad Damon", "Hank Bass", "Harv Brandt", "Jim Elsner",
+            "Mike Prost", "JaSun Burdick", 
+            "Charles Robshaw", "Jordan Huston", "John Elsner", 
+            "Craig Anderson")
+
+df <- data.frame(initial, final, player)
+
+li <- df$player
+lf <- df$player
+
+ggplot(df) + 
+  geom_segment(aes(x = 0, xend = 1, 
+                   y = initial, yend = final),
+               size = .75, col = 'gray70') +
+  scale_y_continuous(limits = c(0, 12)) +
+  geom_text(label = "Initial Seed", x = 0, y = 11, hjust = 'right') +
+  geom_text(label = "Final Rank", x = 1, y = 11, hjust = 'left') +
+  geom_text(label = li, y = df$initial, x = rep.int(0, 10), hjust = 'right', size = 3.5) +
+  geom_text(label = lf, y = df$final, x = rep.int(1, 10), hjust = 'left', size = 3.5) +
+  xlim((0 - .5), (1 + .5)) +
+  ggtitle("13th Rally in Tally (Sunday)") +
   theme_void() 
 
 ```
