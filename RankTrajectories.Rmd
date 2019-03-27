@@ -173,19 +173,7 @@ ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   theme_economist() +
   ggtitle("13th Annual Tally Rally (Saturday)\nPlayer Trajectory") +
   scale_color_manual(values = getPalette(nP), guide = FALSE)
-```
 
-Slope graph
-```{r}
-initial <- 1:12
-final <- 1:12
-
-<<<<<<< HEAD
-player <- c("Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
-                   "Hank Bass", "John Elsner", "Jordan Huston", "JaSun Burdick", "Charles Robshaw",
-                   "Diana Huston", "Beth Verish", "Jim Gaarder")
-df <- data.frame(initial, final, player)
-=======
 ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   geom_line(size = 2) +
   geom_point(size = 3) +
@@ -196,9 +184,37 @@ ggplot(Long, aes(x = Round, y = Rank, color = Player)) +
   theme_economist() +
   ggtitle("13th Annual Tally Rally (Sunday)\nPlayer Trajectory") +
   scale_color_manual(values = getPalette(nP), guide = FALSE)
+```
 
+Slope graph
+```{r}
+initial <- 1:12
+final <- c(1, 5, 3, 4, 2, 10, 8, 6, 7, 9, 11, 12)
 
->>>>>>> 3a11aee0e50fd8a40f1c88217f5254dbad554baa
+initial <- 13 - initial
+final <- 13 - final
+
+player <- c("Conrad Damon", "Mike Prost",  "Harv Brandt", "Jim Elsner",
+            "Hank Bass", "John Elsner", "Jordan Huston", "JaSun Burdick", "Charles Robshaw",
+            "Diana Huston", "Beth Verish", "Jim Gaarder")
+df <- data.frame(initial, final, player)
+
+li <- df$player
+lf <- df$player
+
+ggplot(df) + 
+  geom_segment(aes(x = 0, xend = 1, 
+                   y = initial, yend = final),
+               size = .75, col = 'gray70') +
+  scale_y_continuous(limits = c(0, 14)) +
+  geom_text(label = "Initial Seed", x = 0, y = 13, hjust = 'right') +
+  geom_text(label = "Final Rank", x = 1, y = 13, hjust = 'left') +
+  geom_text(label = li, y = df$initial, x = rep.int(0, 12), hjust = 'right', size = 3.5) +
+  geom_text(label = lf, y = df$final, x = rep.int(1, 12), hjust = 'left', size = 3.5) +
+  xlim((0 - .5), (1 + .5)) +
+  ggtitle("13th Rally in Tally (Saturday)") +
+  theme_void() 
+
 ```
 
 
